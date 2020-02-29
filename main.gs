@@ -17,24 +17,42 @@ function getAccounts(name) {
     return sheet.getRange(1, 1, lastRow, 3).getValues();
 }
 
+/**
+ * main
+ */
 function updatePlayer() {
-  var accounts = getAccounts('player');
+  update('player');
+}
+function updateStaff() {
+  update('staff');
+}
+function updateRental() {
+  update('rental');
+}
+function updatePast() {
+  update('past');
+}
+function updateOther() {
+  update('past');
+}
+
+function update(name) {
+  var accounts = getAccounts(name + 'Account');
+  var margeSheet = getSheet(name);
+  margeSheet.clear();
   for (var i = 1; i < accounts.length; i++) {
     var id = accounts[i][2];
-    var sheet = getSheet(accounts[i][1]);
-    sheet.clear();
     
     // FIXME: media_typeはpictureしか取得できない
     var url = 'https://sebsauvage.net/rss-bridge/?action=display&bridge=Instagram&context=Username&u=' + id + '&media_type=picture&format=Json'
     var list = request(url);
-    insert(sheet, list);
+    insert(margeSheet, list);
     
     var url = 'https://sebsauvage.net/rss-bridge/?action=display&bridge=Instagram&context=Username&u=' + id + '&media_type=multiple&format=Json'
     var list = request(url);
-    insert(sheet, list);
-    
-    sheet.sort(3, false);
+    insert(margeSheet, list);
   }
+  margeSheet.sort(3, false);
 }
 
 
