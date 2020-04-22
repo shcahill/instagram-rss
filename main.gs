@@ -17,6 +17,7 @@ function getAccounts(name) {
     return sheet.getRange(1, 1, lastRow, 3).getValues();
 }
 
+// TODO: 履歴をとっておきたい
 /**
  * main
  */
@@ -43,12 +44,9 @@ function update(name) {
   for (var i = 1; i < accounts.length; i++) {
     var id = accounts[i][2];
     
-    // FIXME: media_typeはpictureしか取得できない
-    var url = 'https://sebsauvage.net/rss-bridge/?action=display&bridge=Instagram&context=Username&u=' + id + '&media_type=picture&format=Json'
-    var list = request(url);
-    insert(margeSheet, list);
-    
-    var url = 'https://sebsauvage.net/rss-bridge/?action=display&bridge=Instagram&context=Username&u=' + id + '&media_type=multiple&format=Json'
+    // NG: https://sebsauvage.net/rss-bridge/
+    // 未確認：https://rssbridge.pofilo.fr/?action=display&bridge=Instagram&context=Username&u=kouitakura&media_type=all&format=Json
+    var url = 'https://rssbridge.co.uk/?action=display&bridge=Instagram&context=Username&u=' + id + '&media_type=all&format=Json'
     var list = request(url);
     insert(margeSheet, list);
   }
