@@ -61,8 +61,9 @@ function insert(sheet, list) {
     sheet.getRange(row + i, 1).setValue(item.comment);
     sheet.getRange(row + i, 2).setValue(item.link);
     sheet.getRange(row + i, 3).setValue(item.date);
-    sheet.getRange(row + i, 4).setValue(item.img);
-    sheet.getRange(row + i, 5).setValue(item.author);
-    sheet.getRange(row + i, 6).setValue(item.displayName);
+    sheet.getRange(row + i, 4).setValue(item.media);
+    sheet.getRange(row + i, 5).setValue(item.mediaType);
+    sheet.getRange(row + i, 6).setValue(item.author);
+    sheet.getRange(row + i, 7).setValue(item.displayName);
   };
 }

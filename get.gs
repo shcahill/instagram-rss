@@ -33,18 +33,19 @@ function getRss(e) {
   if (e != null && e.parameter != null && e.parameter.limit != null) {
     limit = e.parameter.limit
   }
-  var range = spreadSheet.getRange(1, 1, limit, 6);
+  var range = spreadSheet.getRange(1, 1, limit, 7);
  
   // JSON
   var jsonArray = [];
   for(var i=0; i<limit; i++) {
     var line = range.getValues()[i];
     var json = new Object();
-    json['link'] = line[1];
     json['text'] = line[0];
+    json['link'] = line[1];
     json['pubDate'] = line[2]
-    json['picture'] = line[3]
-    json['author'] = line[5]
+    json['media'] = line[3]
+    json['mediaType'] = line[4];
+    json['author'] = line[6]
     jsonArray.push(json);
   }
 
