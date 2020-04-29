@@ -46,8 +46,8 @@ function update(name) {
     
     // NG: https://sebsauvage.net/rss-bridge/
     // 未確認：https://rssbridge.pofilo.fr/?action=display&bridge=Instagram&context=Username&u=kouitakura&media_type=all&format=Json
-    var url = 'https://rssbridge.co.uk/?action=display&bridge=Instagram&context=Username&u=' + id + '&media_type=all&format=Json'
-    var list = request(url);
+    var url = 'https://' + domain + '/?action=display&bridge=Instagram&context=Username&u=' + id + '&media_type=all&format=Json'
+    var list = request(url, accounts[i][0]);
     insert(margeSheet, list);
   }
   margeSheet.sort(3, false);
@@ -63,5 +63,6 @@ function insert(sheet, list) {
     sheet.getRange(row + i, 3).setValue(item.date);
     sheet.getRange(row + i, 4).setValue(item.img);
     sheet.getRange(row + i, 5).setValue(item.author);
+    sheet.getRange(row + i, 6).setValue(item.displayName);
   };
 }
