@@ -39,7 +39,7 @@ function updateOther() {
 
 function update(name) {
   var accounts = getAccounts(name + 'Account');
-  var margeSheet = getSheet(name);
+  var margeSheet = getSheet(name + 'WS');
   margeSheet.clear();
   for (var i = 1; i < accounts.length; i++) {
     var id = accounts[i][2];
@@ -65,6 +65,8 @@ function update(name) {
     }
   }
   margeSheet.sort(3, false);
+  
+  copySheet(margeSheet, name)
 }
 
 
