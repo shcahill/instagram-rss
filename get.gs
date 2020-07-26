@@ -23,7 +23,7 @@ function getRss(e) {
   // スプレッドシート取得
   var sheetName = 'player'
   if (e != null && e.parameter != null && e.parameter.type != null) {
-    var sheetName = e.parameter.type
+    sheetName = e.parameter.type
   }
     
   var spreadSheet = SpreadsheetApp.openById(spreadSheetId).getSheetByName(sheetName);

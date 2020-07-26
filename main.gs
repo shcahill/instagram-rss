@@ -14,10 +14,9 @@ function getSheet(name) {
 function getAccounts(name) {
     var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(name);
     var lastRow = sheet.getLastRow();
-    return sheet.getRange(1, 1, lastRow, 4).getValues();
+    return sheet.getRange(1, 1, lastRow, 5).getValues();
 }
 
-// TODO: 履歴をとっておきたい
 /**
  * main
  */
@@ -42,6 +41,12 @@ function update(name) {
   var margeSheet = getSheet(name + 'WS');
   margeSheet.clear();
   for (var i = 1; i < accounts.length; i++) {
+    var bkupSheet = getSheet(accounts[i][1]);
+    if (!isNeedRequest(accounts[i][4])) {
+      getFromBackup(bkupSheet, margeSheet);
+      continue;
+    }
+    
     var id = accounts[i][2];
     var useDomain = accounts[i][3];
     if (useDomain == null) {
@@ -51,22 +56,35 @@ function update(name) {
     // NG: https://sebsauvage.net/rss-bridge/
     // 未確認：https://rssbridge.pofilo.fr/?action=display&bridge=Instagram&context=Username&u=kouitakura&media_type=all&format=Json
     var url = 'https://' + useDomain + '/?action=display&bridge=Instagram&context=Username&u=' + id + '&media_type=all&format=Json'
-    var list = request(url, accounts[i][0]);
+    var list = request(url, accounts[i][0], useDomain);
     insert(margeSheet, list);
 
-    var bkupSheet = getSheet(accounts[i][1]);
     if (list.length != 0) {
       // バックアップ
       bkupSheet.clear();
       insert(bkupSheet, list);
     } else {
       // 失敗した場合はバックアップからコピー
-      backup(bkupSheet, margeSheet);
+      getFromBackup(bkupSheet, margeSheet);
     }
   }
   margeSheet.sort(3, false);
   
   copySheet(margeSheet, name)
+}
+
+function isNeedRequest(times) {
+  var list = String(times).split(",").map(function(element, index, array) {
+    return parseInt(element);
+  });
+
+  var date = new Date();
+  var hour = parseInt(Utilities.formatDate(date, 'Asia/Tokyo', 'H'));
+  if (list.indexOf(hour) > -1) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 
@@ -84,7 +102,7 @@ function insert(sheet, list) {
   };
 }
 
-function backup(source, target) {
+function getFromBackup(source, target) {
   var items = source.getDataRange().getValues();
   if (items[0][2] != null) {
     var row = target.getLastRow() + 1;
