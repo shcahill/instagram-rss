@@ -20,29 +20,35 @@ function getAccounts(name) {
 /**
  * main
  */
+function updatePlayerForce() {
+  update('player', true);
+}
 function updatePlayer() {
-  update('player');
+  update('player', false);
+}
+function updateStaffForce() {
+  update('staff', true);
 }
 function updateStaff() {
-  update('staff');
+  update('staff', false);
 }
 function updateRental() {
-  update('rental');
+  update('rental', false);
 }
 function updatePast() {
-  update('past');
+  update('past', false);
 }
 function updateOther() {
-  update('past');
+  update('past', false);
 }
 
-function update(name) {
+function update(name, force) {
   var accounts = getAccounts(name + 'Account');
   var margeSheet = getSheet(name + 'WS');
   margeSheet.clear();
   for (var i = 1; i < accounts.length; i++) {
     var bkupSheet = getSheet(accounts[i][1]);
-    if (!isNeedRequest(accounts[i][4])) {
+    if (!force && !isNeedRequest(accounts[i][4])) {
       getFromBackup(bkupSheet, margeSheet);
       continue;
     }
