@@ -15,3 +15,6 @@
 
 // Storyありだけど動かない
 // https://www.wphost.it/rss-bridge-master/
+
+// 自前
+// https://frontale2.herokuapp.com/

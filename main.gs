@@ -14,7 +14,7 @@ function getSheet(name) {
 function getAccounts(name) {
     var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(name);
     var lastRow = sheet.getLastRow();
-    return sheet.getRange(1, 1, lastRow, 5).getValues();
+    return sheet.getRange(1, 1, lastRow, 6).getValues();
 }
 
 /**
@@ -31,6 +31,9 @@ function updateStaffForce() {
 }
 function updateStaff() {
   update('staff', false);
+}
+function updateRentalForce() {
+  update('rental', true);
 }
 function updateRental() {
   update('rental', false);
@@ -53,16 +56,23 @@ function update(name, force) {
       continue;
     }
     
-    var id = accounts[i][2];
-    var useDomain = accounts[i][3];
-    if (useDomain == null) {
-      useDomain = domain;
-    }
+    // 2020.11.23 アカウント名から番号に変更
+    var id = accounts[i][5];
+    
+    // 2020.11.23 自前ドメイン
+    var useDomain = 'frontale2.herokuapp.com';
+//    var useDomain = accounts[i][3];
+//    if (useDomain == null) {
+//      useDomain = domain;
+//    }
     
     // NG: https://sebsauvage.net/rss-bridge/
     // 未確認：https://rssbridge.pofilo.fr/?action=display&bridge=Instagram&context=Username&u=kouitakura&media_type=all&format=Json
-    var url = 'https://' + useDomain + '/?action=display&bridge=Instagram&context=Username&u=' + id + '&media_type=all&format=Json'
-    var list = request(url, accounts[i][0], useDomain);
+    var url = 'https://' + useDomain + '/?action=display&bridge=Instagram&context=Username&u=' + id + '&media_type=all&format=Json&direct_links=on'
+    // 2021.02.14 独自GASに変更
+    //var list = request(url, accounts[i][0], useDomain);
+    let list = requestDirectProfile(accounts[i][2], accounts[i][0]);
+
     insert(margeSheet, list);
 
     if (list.length != 0) {
@@ -77,6 +87,22 @@ function update(name, force) {
   margeSheet.sort(3, false);
   
   copySheet(margeSheet, name)
+}
+
+
+function oneShotRequest(domain, userId) {
+  var url = 'https://' + domain + '/?action=display&bridge=Instagram&context=Username&u=' + userId + '&media_type=all&format=Json'
+  var list = request(url, accounts[i][0], domain);
+    insert(margeSheet, list);
+
+    if (list.length != 0) {
+      // バックアップ
+      bkupSheet.clear();
+      insert(bkupSheet, list);
+    } else {
+      // 失敗した場合はバックアップからコピー
+      getFromBackup(bkupSheet, margeSheet);
+    }
 }
 
 function isNeedRequest(times) {
